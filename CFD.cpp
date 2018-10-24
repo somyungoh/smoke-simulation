@@ -16,7 +16,7 @@
 
 
 //**************************************//
-//			con/destructors				//
+//		con/destructors		//
 //**************************************//
 
 CFD::CFD() {};
@@ -29,16 +29,16 @@ CFD::CFD(int _Nx, int _Ny, float _dc, const float *color_map) : Nx(_Nx), Ny(_Ny)
 	gravity = vec2(0, 9.8 * 50);
 
 	// create fields
-	field_density				= new float[Nx * Ny];
-	field_velocity				= new float[Nx * Ny * 2];
-	field_source				= new float[Nx * Ny];
-	field_force					= new float[Nx * Ny * 2];
-	field_divergence			= new float[Nx * Ny];
-	field_pressure				= new float[Nx * Ny];
-	field_obstruction			= new float[Nx * Ny];
-	field_color					= new float[Nx * Ny * 3];
-	field_kinematicV			= new float[Nx * Ny * 2];
-	field_surfaceT				= new float[Nx * Ny * 2];
+	field_density			= new float[Nx * Ny];
+	field_velocity			= new float[Nx * Ny * 2];
+	field_source			= new float[Nx * Ny];
+	field_force			= new float[Nx * Ny * 2];
+	field_divergence		= new float[Nx * Ny];
+	field_pressure			= new float[Nx * Ny];
+	field_obstruction		= new float[Nx * Ny];
+	field_color			= new float[Nx * Ny * 3];
+	field_kinematicV		= new float[Nx * Ny * 2];
+	field_surfaceT			= new float[Nx * Ny * 2];
 	field_MMCCharacteristicMap	= new float[Nx * Ny * 2];
 
 	// initialize fields
@@ -54,9 +54,9 @@ CFD::CFD(int _Nx, int _Ny, float _dc, const float *color_map) : Nx(_Nx), Ny(_Ny)
 	clone_color_field(Nx, Ny, color_map, field_color);
 
 	k_kinematicViscosity	= 0.01;
-	k_surfaceTension		= exp(-2);
-	it_gaussSeidel			= 5;
-	it_IOP					= 5;
+	k_surfaceTension	= exp(-2);
+	it_gaussSeidel		= 5;
+	it_IOP			= 5;
 
 	advection_type	= SEMI_LAGRANGIAN;
 	use_kinematicV	= false;
@@ -64,14 +64,7 @@ CFD::CFD(int _Nx, int _Ny, float _dc, const float *color_map) : Nx(_Nx), Ny(_Ny)
 };
 
 // destructor
-CFD::~CFD() {
-	//deallocate all fields
-	///delete[] field_density;
-	///delete[] field_velocity;
-	///delete[] field_source;
-	///delete[] field_pressure;
-	///delete[] field_color;
-};
+CFD::~CFD() {};
 
 
 
@@ -87,16 +80,16 @@ void CFD::sim_one_step(float time_step) {
 	// simulate CFD by time_step
 	if (advection_type == MODIFIED_MACCORMACK) gen_MMCmap(time_step);
 
-	sim_density(time_step);						// 1. move density
-	sim_velocity(time_step);					// 2. move velocity
-	sim_color(time_step);						// 3. move color
+	sim_density(time_step);					// 1. move density
+	sim_velocity(time_step);				// 2. move velocity
+	sim_color(time_step);					// 3. move color
 	if (use_kinematicV) sim_kinematicV(time_step);
 	if (use_surfaceT)   sim_surfaceT(time_step);
-	apply_source();								// 4. apply source
-	apply_force(time_step);						// 5. apply force
+	apply_source();						// 4. apply source
+	apply_force(time_step);					// 5. apply force
 	for (int i = 0; i < it_IOP; i++) {
-		sim_incompressibility();				// 6. sim incompressibility
-		sim_boundary();							// 7. sim boundary condition
+		sim_incompressibility();			// 6. sim incompressibility
+		sim_boundary();					// 7. sim boundary condition
 	}
 };
 
@@ -104,12 +97,12 @@ void CFD::sim_one_step(float time_step) {
 
 
 //***************************************//
-//			field add methods			 //
+//		field add methods	 //
 //***************************************//
 
 // update color field with input index and color
 // Precondition: input index must be pixel point in
-//				 XY Coordinate, with RGB value.
+// XY Coordinate, with RGB value.
 void CFD::set_color(int index, const color &c) {
 
 	field_color[index + 0] = c.r;
@@ -180,7 +173,7 @@ vec2 CFD::add_gravity(const vec2 &g) {
 	return gravity;
 }
 
-void CFD::set_advecrtion(int TYPE) { advection_type = TYPE; };
+void CFD::set_advecrtion(int TYPE) 	{ advection_type = TYPE; };
 int  CFD::increase_GS_iteration()	{ return ++it_gaussSeidel; };
 int  CFD::decrease_GS_iteration()	{ return --it_gaussSeidel; };
 int	 CFD::increase_IOP_iteration()	{ return ++it_IOP; };
@@ -190,7 +183,7 @@ float  CFD::decrease_Kviscosity()	{ return k_kinematicViscosity -= 0.001; };
 float  CFD::increase_Ktension()		{ return k_surfaceTension	  += 0.025; };
 float  CFD::decrease_Ktension()		{ return k_surfaceTension	  -= 0.025; };
 bool CFD::toogle_kinematicV()		{ return use_kinematicV = !use_kinematicV; };
-bool CFD::toogle_surfaceT()			{ return use_surfaceT = !use_surfaceT; };
+bool CFD::toogle_surfaceT()		{ return use_surfaceT = !use_surfaceT; };
 
 //***************************************//
 //		local simulation methods		 //
