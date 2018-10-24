@@ -1,2 +1,2 @@
-# smoke-simulation
-basic 2D smoke simulation
+# Smoke Simulation
+A basic 2D smoke simulation
