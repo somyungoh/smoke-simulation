@@ -43,7 +43,7 @@ public:
 	void 	add_obstruction(int index, float intensity);
 	vec2 	add_gravity(const vec2 &gravity);
 
-	int	 	increase_IOP_iteration();
+	int	increase_IOP_iteration();
 	int  	decrease_IOP_iteration();
 	int  	increase_GS_iteration();
 	int  	decrease_GS_iteration();
@@ -58,7 +58,7 @@ public:
 	// get methods
 	color 	get_field_color(int x, int y);
 	color 	get_field_color(int index);
-	int	  	get_field_obstruction(int x, int y);
+	int	get_field_obstruction(int x, int y);
 	float 	get_pressure_value(int x, int y);
 	float 	get_field_density(int x, int y);
 
